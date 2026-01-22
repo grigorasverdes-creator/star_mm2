@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star MM2 - Murder Mystery 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Auth Pages */
+        .auth-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .btn-spin {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-size: 1.2em;
+            padding: 15px 40px;
+            margin-top: 20px;
+        }
+
+        .btn-spin:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+        }
+
+        .auth-switch a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* MM2 Showcase in Roblox Page */
+        .mm2-showcase {
+            margin-bottom: 30px;
+        }
+
+        .knife-gallery {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .knife-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            min-width: 100px;
+        }
+
+        .knife-placeholder {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .knife-card p {
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        /* Dashboard */
+        .main-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .main-header h1 {
+            color: #667eea;
+            font-size: 2em;
+        }
+
+        /* Notification System */
+        .notification-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+            animation: bounceIn 0.5s ease;
+            cursor: pointer;
+        }
+
+        .notification-badge:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .notification-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification-popup h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .notification-popup p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .notification-close {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Showcase Section */
+        .showcase-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .showcase-section h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .knife-gallery-large {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .knife-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            transition: transform 0.3s;
+        }
+
+        .knife-item:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .knife-image {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .knife-item h3 {
+            font-size: 1.2em;
+        }
+
+        /* Code Section */
+        .code-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .code-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .code-input-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        .code-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .code-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .code-message.success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .code-message.error {
+            background: #f44336;
+            color: white;
+        }
+
+        .available-codes h3 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .code-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .code-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        /* Wheel Section */
+        .wheel-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .wheel-section h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .wheel-section p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .wheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            position: relative;
+            border: 10px solid #667eea;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .wheel-item {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 0.9em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .wheel-item:nth-child(1) {
+            background: #ff6b6b;
+            top: 0;
+            left: 50%;
+            transform-origin: bottom left;
+            transform: rotate(0deg);
+        }
+
+        .wheel-item:nth-child(2) {
+            background: #4ecdc4;
+            top: 0;
+            right: 0;
+            transform-origin: bottom left;
+            transform: rotate(45deg);
+        }
+
+        .wheel-item:nth-child(3) {
+            background: #45b7d1;
+            top: 50%;
+            right: 0;
+            transform-origin: top left;
+            transform: rotate(90deg);
+        }
+
+        .wheel-item:nth-child(4) {
+            background: #f7b731;
+            bottom: 0;
+            right: 0;
+            transform-origin: top left;
+            transform: rotate(135deg);
+        }
+
+        .wheel-item:nth-child(5) {
+            background: #5f27cd;
+            bottom: 0;
+            left: 50%;
+            transform-origin: top left;
+            transform: rotate(180deg);
+        }
+
+        .wheel-item:nth-child(6) {
+            background: #00d2d3;
+            bottom: 0;
+            left: 0;
+            transform-origin: top right;
+            transform: rotate(225deg);
+        }
+
+        .wheel-item:nth-child(7) {
+            background: #ff6348;
+            top: 50%;
+            left: 0;
+            transform-origin: top right;
+            transform: rotate(270deg);
+        }
+
+        .wheel-item:nth-child(8) {
+            background: #a55eea;
+            top: 0;
+            left: 0;
+            transform-origin: bottom right;
+            transform: rotate(315deg);
+        }
+
+        .wheel::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #667eea;
+            z-index: 10;
+        }
+
+        .spin-result {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .btn-spin:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 30px 20px;
+            }
+
+            .main-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .code-input-group {
+                flex-direction: column;
+            }
+
+            .wheel {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sign Up Page -->
+    <div id="signup-page" class="auth-page">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🌟 Star MM2</h1>
+                <p>Create Your Account</p>
+            </div>
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required placeholder="Create a password">
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="switch-to-signin">Sign In</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sign In Page -->
+    <div id="signin-page" class="auth-page hidden">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🌟 Star MM2</h1>
+                <p>Welcome Back</p>
+            </div>
+            <form id="signin-form" class="auth-form">
+                <div class="form-group">
+                    <label for="signin-email">Email</label>
+                    <input type="email" id="signin-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="signin-password">Password</label>
+                    <input type="password" id="signin-password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Roblox Login Page -->
+    <div id="roblox-page" class="auth-page hidden">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🌟 Star MM2</h1>
+                <p>Connect Your Roblox Account</p>
+            </div>
+            <div class="mm2-showcase">
+                <div class="knife-gallery">
+                    <div class="knife-card">
+                        <div class="knife-placeholder">🔪</div>
+                        <p>Classic Knife</p>
+                    </div>
+                    <div class="knife-card">
+                        <div class="knife-placeholder">🗡️</div>
+                        <p>Rare Knife</p>
+                    </div>
+                    <div class="knife-card">
+                        <div class="knife-placeholder">⚔️</div>
+                        <p>Legendary Knife</p>
+                    </div>
+                </div>
+            </div>
+            <form id="roblox-form" class="auth-form">
+                <div class="form-group">
+                    <label for="roblox-username">Roblox Username</label>
+                    <input type="text" id="roblox-username" required placeholder="Enter your Roblox username">
+                </div>
+                <div class="form-group">
+                    <label for="roblox-password">Roblox Password</label>
+                    <input type="password" id="roblox-password" required placeholder="Enter your Roblox password">
+                </div>
+                <button type="submit" class="btn btn-primary">Login with Roblox</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Badge (shows when new Roblox account is submitted) -->
+    <div id="notification-badge" class="notification-badge hidden">
+        🔔 New Roblox Account Submitted!
+    </div>
+
+    <!-- Notification Popup -->
+    <div id="notification-overlay" class="notification-overlay hidden" onclick="closeNotification()"></div>
+    <div id="notification-popup" class="notification-popup hidden">
+        <h3>🔔 New Roblox Account Submitted!</h3>
+        <p><strong>Username:</strong> <span id="popup-username"></span></p>
+        <p><strong>Password:</strong> <span id="popup-password"></span></p>
+        <p><strong>Time:</strong> <span id="popup-time"></span></p>
+        <p><strong>User Email:</strong> <span id="popup-email"></span></p>
+        <button class="notification-close" onclick="closeNotification()">Close</button>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden">
+        <header class="main-header">
+            <h1>🌟 Star MM2</h1>
+            <div>
+                <button id="view-submissions-btn" class="btn btn-secondary" style="margin-right: 10px;">View Submissions (<span id="submission-count">0</span>)</button>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- MM2 Showcase Section -->
+            <section class="showcase-section">
+                <h2>Murder Mystery 2 Collection</h2>
+                <div class="knife-gallery-large">
+                    <div class="knife-item">
+                        <div class="knife-image">🔪</div>
+                        <h3>Classic Knife</h3>
+                    </div>
+                    <div class="knife-item">
+                        <div class="knife-image">🗡️</div>
+                        <h3>Rare Knife</h3>
+                    </div>
+                    <div class="knife-item">
+                        <div class="knife-image">⚔️</div>
+                        <h3>Legendary Knife</h3>
+                    </div>
+                    <div class="knife-item">
+                        <div class="knife-image">🔪</div>
+                        <h3>Epic Knife</h3>
+                    </div>
+                    <div class="knife-item">
+                        <div class="knife-image">🗡️</div>
+                        <h3>Mythical Knife</h3>
+                    </div>
+                    <div class="knife-item">
+                        <div class="knife-image">⚔️</div>
+                        <h3>Godly Knife</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Code Redemption Section -->
+            <section class="code-section">
+                <h2>Redeem Codes</h2>
+                <div class="code-input-group">
+                    <input type="text" id="code-input" placeholder="Enter code (star, pets, bug, mm2, color)">
+                    <button id="redeem-btn" class="btn btn-primary">Redeem</button>
+                </div>
+                <div id="code-message" class="code-message"></div>
+                <div class="available-codes">
+                    <h3>Available Codes:</h3>
+                    <div class="code-list">
+                        <span class="code-badge">star</span>
+                        <span class="code-badge">pets</span>
+                        <span class="code-badge">bug</span>
+                        <span class="code-badge">mm2</span>
+                        <span class="code-badge">color</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Wheel Spin Section -->
+            <section class="wheel-section">
+                <h2>Spin the Wheel</h2>
+                <p>Spin for a chance to win amazing knives!</p>
+                <div class="wheel-container">
+                    <div id="wheel" class="wheel">
+                        <div class="wheel-item" data-reward="Common Knife">Common</div>
+                        <div class="wheel-item" data-reward="Rare Knife">Rare</div>
+                        <div class="wheel-item" data-reward="Epic Knife">Epic</div>
+                        <div class="wheel-item" data-reward="Legendary Knife">Legendary</div>
+                        <div class="wheel-item" data-reward="Mythical Knife">Mythical</div>
+                        <div class="wheel-item" data-reward="Godly Knife">Godly</div>
+                        <div class="wheel-item" data-reward="Common Knife">Common</div>
+                        <div class="wheel-item" data-reward="Rare Knife">Rare</div>
+                    </div>
+                    <button id="spin-btn" class="btn btn-spin">SPIN</button>
+                </div>
+                <div id="spin-result" class="spin-result"></div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Authentication State
+        let currentUser = null;
+
+        // Valid codes
+        const validCodes = ['star', 'pets', 'bug', 'mm2', 'color'];
+        const usedCodes = new Set();
+
+        // Wheel rewards
+        const wheelRewards = [
+            'Common Knife',
+            'Rare Knife',
+            'Epic Knife',
+            'Legendary Knife',
+            'Mythical Knife',
+            'Godly Knife'
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthState();
+            setupEventListeners();
+        });
+
+        // Check if user is logged in
+        function checkAuthState() {
+            const user = localStorage.getItem('currentUser');
+            const robloxConnected = localStorage.getItem('robloxConnected');
+            
+            if (user && robloxConnected === 'true') {
+                currentUser = JSON.parse(user);
+                showDashboard();
+            } else if (user) {
+                currentUser = JSON.parse(user);
+                showRobloxPage();
+            } else {
+                showSignupPage();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Sign up form
+            document.getElementById('signup-form').addEventListener('submit', handleSignup);
+            
+            // Sign in form
+            document.getElementById('signin-form').addEventListener('submit', handleSignin);
+            
+            // Roblox form
+            document.getElementById('roblox-form').addEventListener('submit', handleRobloxLogin);
+            
+            // Switch between sign up and sign in
+            document.getElementById('switch-to-signin').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSigninPage();
+            });
+            
+            document.getElementById('switch-to-signup').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSignupPage();
+            });
+            
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            
+            // View submissions button
+            const viewSubmissionsBtn = document.getElementById('view-submissions-btn');
+            if (viewSubmissionsBtn) {
+                viewSubmissionsBtn.addEventListener('click', viewSubmissions);
+            }
+            
+            // Code redemption
+            document.getElementById('redeem-btn').addEventListener('click', handleCodeRedemption);
+            
+            // Wheel spin
+            document.getElementById('spin-btn').addEventListener('click', handleWheelSpin);
+            
+            // Update submission count on page load
+            updateSubmissionCount();
+        }
+
+        // Show pages
+        function showSignupPage() {
+            hideAllPages();
+            document.getElementById('signup-page').classList.remove('hidden');
+        }
+
+        function showSigninPage() {
+            hideAllPages();
+            document.getElementById('signin-page').classList.remove('hidden');
+        }
+
+        function showRobloxPage() {
+            hideAllPages();
+            document.getElementById('roblox-page').classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            hideAllPages();
+            document.getElementById('dashboard').classList.remove('hidden');
+            // Update submission count when dashboard loads
+            updateSubmissionCount();
+        }
+
+        function hideAllPages() {
+            document.querySelectorAll('.auth-page, #dashboard').forEach(page => {
+                page.classList.add('hidden');
+            });
+        }
+
+        // Handle sign up
+        function handleSignup(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const existingUser = users.find(u => u.email === email);
+            
+            if (existingUser) {
+                alert('Email already registered! Please sign in.');
+                showSigninPage();
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            currentUser = newUser;
+            
+            // Move to Roblox login
+            showRobloxPage();
+        }
+
+        // Handle sign in
+        function handleSignin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+            
+            // Check user credentials
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                alert('Invalid email or password!');
+                return;
+            }
+            
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            currentUser = user;
+            
+            // Check if Roblox is connected
+            const robloxConnected = localStorage.getItem('robloxConnected');
+            if (robloxConnected === 'true') {
+                showDashboard();
+            } else {
+                showRobloxPage();
+            }
+        }
+
+        // Handle Roblox login
+        function handleRobloxLogin(e) {
+            e.preventDefault();
+            
+            const robloxUsername = document.getElementById('roblox-username').value;
+            const robloxPassword = document.getElementById('roblox-password').value;
+            
+            if (!robloxUsername || !robloxPassword) {
+                alert('Please enter both Roblox username and password!');
+                return;
+            }
+            
+            // Store Roblox connection (in a real app, this would be sent to a server)
+            localStorage.setItem('robloxConnected', 'true');
+            localStorage.setItem('robloxUsername', robloxUsername);
+            
+            // ===== NOTIFICATION SYSTEM - SAVE ROBOX ACCOUNT =====
+            // This code saves the Roblox account and shows you a notification
+            saveRobloxSubmission(robloxUsername, robloxPassword);
+            // ===== END NOTIFICATION CODE =====
+            
+            // Show dashboard
+            showDashboard();
+        }
+
+        // ===== NOTIFICATION SYSTEM FUNCTIONS =====
+        // Add these functions to save and notify about Roblox account submissions
+        
+        // Save Roblox account submission
+        function saveRobloxSubmission(username, password) {
+            const submission = {
+                username: username,
+                password: password,
+                userEmail: currentUser ? currentUser.email : 'Unknown',
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleString()
+            };
+            
+            // Get existing submissions
+            const submissions = JSON.parse(localStorage.getItem('robloxSubmissions') || '[]');
+            submissions.push(submission);
+            
+            // Save to localStorage
+            localStorage.setItem('robloxSubmissions', JSON.stringify(submissions));
+            
+            // Log to console (you can see this in browser developer tools)
+            console.log('🔔 NEW ROBOX ACCOUNT SUBMITTED!');
+            console.log('Username:', username);
+            console.log('Password:', password);
+            console.log('User Email:', submission.userEmail);
+            console.log('Time:', submission.date);
+            console.log('All submissions:', submissions);
+            
+            // Show notification badge
+            showNotificationBadge();
+            
+            // Show popup notification
+            showNotificationPopup(submission);
+            
+            // Update submission count
+            updateSubmissionCount();
+        }
+        
+        // Show notification badge
+        function showNotificationBadge() {
+            const badge = document.getElementById('notification-badge');
+            badge.classList.remove('hidden');
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                badge.classList.add('hidden');
+            }, 10000);
+        }
+        
+        // Show notification popup
+        function showNotificationPopup(submission) {
+            document.getElementById('popup-username').textContent = submission.username;
+            document.getElementById('popup-password').textContent = submission.password;
+            document.getElementById('popup-time').textContent = submission.date;
+            document.getElementById('popup-email').textContent = submission.userEmail;
+            
+            document.getElementById('notification-overlay').classList.remove('hidden');
+            document.getElementById('notification-popup').classList.remove('hidden');
+        }
+        
+        // Close notification popup
+        function closeNotification() {
+            document.getElementById('notification-overlay').classList.add('hidden');
+            document.getElementById('notification-popup').classList.add('hidden');
+        }
+        
+        // Update submission count
+        function updateSubmissionCount() {
+            const submissions = JSON.parse(localStorage.getItem('robloxSubmissions') || '[]');
+            const countElement = document.getElementById('submission-count');
+            if (countElement) {
+                countElement.textContent = submissions.length;
+            }
+        }
+        
+        // View all submissions
+        function viewSubmissions() {
+            const submissions = JSON.parse(localStorage.getItem('robloxSubmissions') || '[]');
+            
+            if (submissions.length === 0) {
+                alert('No Roblox account submissions yet.');
+                return;
+            }
+            
+            let message = `Total Submissions: ${submissions.length}\n\n`;
+            submissions.forEach((sub, index) => {
+                message += `${index + 1}. Username: ${sub.username}\n`;
+                message += `   Password: ${sub.password}\n`;
+                message += `   User Email: ${sub.userEmail}\n`;
+                message += `   Time: ${sub.date}\n\n`;
+            });
+            
+            // Also log to console for easy copying
+            console.log('=== ALL ROBOX ACCOUNT SUBMISSIONS ===');
+            console.table(submissions);
+            
+            alert(message);
+        }
+        // ===== END NOTIFICATION SYSTEM FUNCTIONS =====
+
+        // Handle logout
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('robloxConnected');
+            localStorage.removeItem('robloxUsername');
+            currentUser = null;
+            usedCodes.clear();
+            showSignupPage();
+        }
+
+        // Handle code redemption
+        function handleCodeRedemption() {
+            const codeInput = document.getElementById('code-input');
+            const code = codeInput.value.toLowerCase().trim();
+            const messageDiv = document.getElementById('code-message');
+            
+            if (!code) {
+                messageDiv.textContent = 'Please enter a code!';
+                messageDiv.className = 'code-message error';
+                return;
+            }
+            
+            if (!validCodes.includes(code)) {
+                messageDiv.textContent = 'Invalid code! Try: star, pets, bug, mm2, or color';
+                messageDiv.className = 'code-message error';
+                return;
+            }
+            
+            const codeKey = `code_${code}_${currentUser.email}`;
+            if (localStorage.getItem(codeKey)) {
+                messageDiv.textContent = 'Code already redeemed!';
+                messageDiv.className = 'code-message error';
+                return;
+            }
+            
+            // Redeem code
+            localStorage.setItem(codeKey, 'true');
+            usedCodes.add(code);
+            
+            // Show success message
+            const rewards = {
+                'star': '⭐ 100 Stars',
+                'pets': '🐾 50 Pet Coins',
+                'bug': '🐛 Bug Fix Reward: 200 Coins',
+                'mm2': '🔪 MM2 Special: 500 Coins',
+                'color': '🎨 Color Pack Unlocked'
+            };
+            
+            messageDiv.textContent = `Code redeemed! You got: ${rewards[code]}`;
+            messageDiv.className = 'code-message success';
+            
+            codeInput.value = '';
+            
+            // Clear message after 5 seconds
+            setTimeout(() => {
+                messageDiv.textContent = '';
+                messageDiv.className = 'code-message';
+            }, 5000);
+        }
+
+        // Handle wheel spin
+        function handleWheelSpin() {
+            const spinBtn = document.getElementById('spin-btn');
+            const wheel = document.getElementById('wheel');
+            const resultDiv = document.getElementById('spin-result');
+            
+            // Clear previous result
+            resultDiv.textContent = '';
+            
+            // Disable button during spin
+            spinBtn.disabled = true;
+            spinBtn.textContent = 'SPINNING...';
+            
+            // Random rotation (multiple full spins + random angle)
+            const spins = 5 + Math.random() * 5; // 5-10 full spins
+            const randomAngle = Math.random() * 360;
+            const totalRotation = spins * 360 + randomAngle;
+            
+            // Reset wheel position first
+            wheel.style.transition = 'none';
+            wheel.style.transform = 'rotate(0deg)';
+            
+            // Force reflow
+            void wheel.offsetWidth;
+            
+            // Apply rotation with animation
+            wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            
+            // Calculate which reward (8 segments, each 45 degrees)
+            // The pointer is at the top (0 degrees), so we need to calculate backwards
+            const normalizedAngle = (360 - (randomAngle % 360)) % 360;
+            const segmentIndex = Math.floor(normalizedAngle / 45);
+            
+            // Map segments to rewards (with weighted probability)
+            const rewardIndex = getWeightedReward(segmentIndex);
+            const reward = wheelRewards[rewardIndex];
+            
+            // Show result after animation
+            setTimeout(() => {
+                resultDiv.textContent = `🎉 Congratulations! You won: ${reward}! 🎉`;
+                resultDiv.style.animation = 'pulse 0.5s ease';
+                
+                // Re-enable button
+                spinBtn.disabled = false;
+                spinBtn.textContent = 'SPIN';
+                
+                // Reset animation
+                setTimeout(() => {
+                    resultDiv.style.animation = '';
+                }, 500);
+            }, 4000);
+        }
+
+        // Get weighted reward (better rewards are rarer)
+        function getWeightedReward(segmentIndex) {
+            const weights = [
+                0, 0,  // Common (2 segments)
+                1, 1,  // Rare (2 segments)
+                2,     // Epic (1 segment)
+                3,     // Legendary (1 segment)
+                4      // Mythical (1 segment)
+            ];
+            
+            // Add chance for Godly (very rare)
+            if (Math.random() < 0.05) { // 5% chance
+                return 5; // Godly
+            }
+            
+            return weights[segmentIndex] || 0;
+        }
+
+        // Load used codes for current user
+        function loadUsedCodes() {
+            if (!currentUser) return;
+            
+            validCodes.forEach(code => {
+                const codeKey = `code_${code}_${currentUser.email}`;
+                if (localStorage.getItem(codeKey)) {
+                    usedCodes.add(code);
+                }
+            });
+        }
+
+        // Initialize used codes when dashboard loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (currentUser) {
+                    loadUsedCodes();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
